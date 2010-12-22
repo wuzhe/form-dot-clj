@@ -1,0 +1,6 @@
+*.clj~
+.DS_Store
+pom.xml
+*jar
+lib
+classes
