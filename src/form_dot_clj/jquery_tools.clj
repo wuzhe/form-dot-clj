@@ -3,18 +3,19 @@
   (:require [form-dot-clj.extend :as extend])
   (:use hiccup.core)
   (:require [hiccup.page-helpers :as ph])
-  (:require [form-dot-clj.js-dot-clj :as js])
+  (:require [com.reasonr.scriptjure :as js])
   (:use clojure.contrib.strint))
+
+(defn jq-sel [id] (js/js* ($ (str "#" (clj id)))))
 
 ;;========== Javascript includes ===============================================
 
 (defn controls-on-ready
   "Inserts the javascript to be run on-ready for each control"
   [form]
-  (apply str
-         (remove nil?
-                 (map :on-ready
-                      (vals (form :controls))))))
+  (js/js* (cons 'js/do
+		(remove nil?
+			(map :on-ready (vals (form :controls)))))))
     
 
 (defn include-js
@@ -22,14 +23,14 @@
    form and form-id e.g
      (include-js the-form \"myform\")"
   [form form-id]
-  (html
-   (ph/include-js "http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js")
-   [:script {:type "text/javascript"}
-    (js/js
-     [:.ready :$document
-      [:function []
-       [:.validator (js/id form-id)]
-       (controls-on-ready form)]])]))
+  (let [ready-js (controls-on-ready form)]
+    (html
+     (ph/include-js "http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js")
+     [:script {:type "text/javascript"}
+      (js/js (.ready ($ document)
+		     (fn []
+		       (.validator (clj (jq-sel form-id)))
+		       (clj ready-js))))])))
 
     
   
@@ -89,11 +90,11 @@
 
 (defn- date-on-ready
   [id target-id date-format]
-  (js/js
-   [:.dateinput (js/id id)
-    {:format (js/quoted date-format)
-     :change [:function []
-              [:.val (js/id target-id) [:.getValue :this "yyyy-mm-dd"]]]}]))
+  (js/js* (.dateinput (clj (jq-sel id))
+	   {:format (clj date-format)
+	    :change (fn []
+		      (.val (clj (jq-sel target-id))
+			    (.getValue this "yyyy-mm-dd")))})))
 
 (defn- display-name [name] (str "dis" name))
 
@@ -128,7 +129,7 @@
 ;;========== Range-input =======================================================
 
 (def range-on-ready
-     (js/js [:.rangeinput :$:range]))
+  (js/js* (.rangeinput (clj (jq-sel ":range")))))
 
 (defn range-input
   "Creates a range input to handle the given field"
