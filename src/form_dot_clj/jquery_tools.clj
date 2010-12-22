@@ -13,7 +13,7 @@
 (defn controls-on-ready
   "Inserts the javascript to be run on-ready for each control"
   [form]
-  (cons 'js/do
+  (cons (js/js* js/do)
 	(remove nil?
 		(map :on-ready (vals (form :controls))))))
     
