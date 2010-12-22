@@ -16,7 +16,7 @@
   (cons (js/js* js/do)
 	(remove nil?
 		(map :on-ready (vals (form :controls))))))
-    
+
 
 (defn include-js
   "Returns the javascript required to activate jquery-tools for the given
@@ -32,8 +32,8 @@
 		       (.validator (clj (jq-sel form-id)))
 		       (clj ready-js))))])))
 
-    
-  
+
+
 ;;========== Textbox ===========================================================
 
 (defn textbox
@@ -50,7 +50,7 @@
            {:type "url"})
          (select-keys options [:name :label :size :type :maxlength :required])
          {:Control ::Textbox}))
-                      
+
 (defmethod extend/show-html ::Textbox
   [control params]
   (let [options [:name :size :maxlength :type :pattern]
@@ -60,7 +60,7 @@
                           (if (control :required) {:required "required"})
                           (select-keys control options))]
     (html [:input attributes])))
-           
+
 
 ;;========== Number-input ======================================================
 
@@ -73,7 +73,7 @@
              {:min (first num-field) :max (second num-field)})
            (select-keys options [:name :label :size :required])
            {:Control ::Number-input})))
-                      
+
 
 (defmethod extend/show-html ::Number-input
   [control params]
@@ -84,17 +84,17 @@
                           (if (control :required) {:required "required"})
                           (select-keys control options))]
     (html [:input attributes])))
-           
+
 
 ;;========== Date-input ========================================================
 
 (defn- date-on-ready
   [id target-id date-format]
   (js/js* (.dateinput (clj (jq-sel id))
-	   {:format (clj date-format)
-	    :change (fn []
-		      (.val (clj (jq-sel target-id))
-			    (.getValue this "yyyy-mm-dd")))})))
+		      {:format (clj date-format)
+		       :change (fn []
+				 (.val (clj (jq-sel target-id))
+				       (.getValue this "yyyy-mm-dd")))})))
 
 (defn- display-name [name] (str "dis" name))
 
@@ -110,7 +110,7 @@
                                    (options :name)
                                    (or (options :format)
                                        "d mmmm yyyy"))}))
-                      
+
 (defmethod extend/show-html ::Date-input
   [control params]
   (let [options [:size :min :max]
@@ -123,7 +123,7 @@
     (html
      [:input {:type "hidden" :name control-name :id control-name}]
      [:input attributes])))
-           
+
 
 
 ;;========== Range-input =======================================================
@@ -142,7 +142,7 @@
            (select-keys options [:name :label :step :required])
            {:Control ::Range-input
             :on-ready range-on-ready})))
-                      
+
 (defmethod extend/show-html ::Range-input
   [control params]
   (let [options [:name :min :max :step]
