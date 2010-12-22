@@ -13,9 +13,9 @@
 (defn controls-on-ready
   "Inserts the javascript to be run on-ready for each control"
   [form]
-  (js/js* (cons 'js/do
-		(remove nil?
-			(map :on-ready (vals (form :controls)))))))
+  (cons 'js/do
+	(remove nil?
+		(map :on-ready (vals (form :controls))))))
     
 
 (defn include-js
@@ -129,7 +129,7 @@
 ;;========== Range-input =======================================================
 
 (def range-on-ready
-  (js/js* (.rangeinput (clj (jq-sel ":range")))))
+  (js/js* (.rangeinput ($ ":range"))))
 
 (defn range-input
   "Creates a range input to handle the given field"
