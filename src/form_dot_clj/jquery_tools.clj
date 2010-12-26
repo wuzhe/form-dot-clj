@@ -25,12 +25,12 @@
   [form form-id]
   (let [ready-js (controls-on-ready form)]
     (html
-     (ph/include-js "http://cdn.jquerytools.org/1.2.3/full/jquery.tools.min.js")
-     [:script {:type "text/javascript"}
+     (ph/include-js "http://cdn.jquerytools.org/1.2.5/full/jquery.tools.min.js")
+     (ph/javascript-tag
       (js/js (.ready ($ document)
 		     (fn []
 		       (.validator (clj (jq-sel form-id)))
-		       (clj ready-js))))])))
+		       (clj ready-js))))))))
 
 
 
